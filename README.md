@@ -64,6 +64,38 @@ The JVM tests synthesise a detuned, vibrato-laden "whistle" of a known melody, c
 transcribes back exactly, then compose and render a song in every style. The renders are written
 to `app/build/test-songs/*.wav` so you can hear them without a phone.
 
+## Releases (CI)
+
+`.github/workflows/release.yml` builds a release APK and publishes it as a GitHub Release.
+
+* **Tag push:** `git tag v1.0.0 && git push origin v1.0.0` publishes "WhistleSong v1.0.0" with
+  `WhistleSong-v1.0.0.apk` attached.
+* **Manual run:** Actions → *Release APK* → *Run workflow* and enter a version. The tag is created for you.
+
+`versionName` comes from the tag, and `versionCode` comes from the workflow run number, so it always goes up.
+
+### Signing (recommended)
+
+Without signing secrets, CI signs with a throwaway debug key. That APK installs fine, but each
+release has a different key, so Android won't install it as an update. You'd have to uninstall the old
+version first. To sign every release with the same key, make a keystore once:
+
+```bash
+keytool -genkeypair -keystore whistlesong.jks -alias whistlesong -keyalg RSA -keysize 2048 -validity 10000
+```
+
+Then add these repository secrets (Settings → Secrets and variables → Actions):
+
+| Secret | Value |
+|---|---|
+| `SIGNING_KEYSTORE_BASE64` | output of `base64 -w0 whistlesong.jks` |
+| `SIGNING_STORE_PASSWORD` | keystore password |
+| `SIGNING_KEY_ALIAS` | `whistlesong` |
+| `SIGNING_KEY_PASSWORD` | key password |
+
+Keep `whistlesong.jks` somewhere safe and out of the repo. If you lose it, you can't publish updates
+that install over existing versions.
+
 ## Tips for best results
 
 * Whistle 2–8 seconds, fairly close to the mic, in a quiet room.
