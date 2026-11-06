@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.WhistleSong" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">#FF12101C</item>
+        <item name="android:statusBarColor">#FF12101C</item>
+        <item name="android:navigationBarColor">#FF12101C</item>
+    </style>
+</resources>
